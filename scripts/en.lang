@@ -1,0 +1,23 @@
+{ changeLogs        :
+    { "0.0.1" :   "Release"
+    , "0.0.2" :   "Registered to npm"
+    }
+
+, changelog         : 'Change Log'
+, _OR               : 'OR'
+, description       : 'EventEmitter which emits read-line events'
+, description2      : 'A simple EventEmitter which emits read-line events'
+, install           : 'Installation'
+, overview          : 'Overview'
+, what              : 'What\'s this?'
+, usage             : 'Usage'
+, withfile          : 'with file'
+, eachline          : 'each line comes here'
+, file              : 'file'
+, endemit           : function(v) { return 'emitted at the end of '+ v}
+, erremit           : 'emitted when an error occurred'
+, withStream        : 'with Stream'
+, like              : function(v) { return 'like '+v }
+, notice            : 'Notice'
+, separator_notice  : "Currently, if you'd like to set CR or CRLF as a line separator, \nyou need to set the option like belows."  
+}

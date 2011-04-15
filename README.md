@@ -1,15 +1,17 @@
-LineStream.js 0.0.1
+LineStream.js 0.0.2
 ==========
 [Node.js] EventEmitter which emits read-line events
 
 Change Log
+
 ----------------
-* [0.0.1]: release
+* [0.0.1]: Release
+* [0.0.2]: Registered to npm
 
 Overview
 ----------------
-### What's this?  ###
-    A simple EventEmitter which emits read-line events.
+### What's this? ###
+    A simple EventEmitter which emits read-line events
     
     var stream = new LineStream(file);
     stream.on('line', function(line){
@@ -20,7 +22,9 @@ Overview
 ### Installation ###
     git clone git://github.com/shinout/LineStream.git
 
+    OR
 
+    npm install linestream
 
 ### Usage ###
 #### with file ####
@@ -31,11 +35,11 @@ Overview
       console.log(line); // each line comes here
     });
 
-    stream.on('end', function() { // emitted at the end of the file
+    stream.on('end', function() { // emitted at the end of file
       console.log('end');
     });
 
-    stream.on('error', function(e) {
+    stream.on('error', function(e) { // emitted when an error occurred
       console.log(e);
     });
 
@@ -50,7 +54,7 @@ Overview
         console.log(line); // each line comes here
       });
 
-      stream.on('end', function() { // emitted at the end of the response
+      stream.on('end', function() { // emitted at the end of response
         console.log('end'); 
       });
 

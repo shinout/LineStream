@@ -65,4 +65,6 @@ function LineStream(arg, op) {
 }
 
 LineStream.prototype = new EventEmitter();
+
+LineStream.version = '0.0.2';
 module.exports = LineStream;

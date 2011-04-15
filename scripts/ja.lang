@@ -1,0 +1,23 @@
+{ changeLogs        :
+    { "0.0.1" :   "リリース"
+    , "0.0.2" :   "npmに登録。"
+    }
+
+, changelog         : '変更履歴'
+, _OR               : 'OR'
+, description       : 'データ１行ごとに処理できるようにするEventEmitter'
+, description2      : 'データ１行ごとに処理できるようにするEventEmitter. データはファイルまたはStream。'
+, install           : 'インストール方法'
+, overview          : '概要'
+, what              : '要するに？'
+, usage             : '使い方'
+, withfile          : 'ファイルを扱う'
+, eachline          : '各行がここに入ります'
+, file              : 'ファイル'
+, endemit           : function(v) { return v + 'の終わりに実行されます。'}
+, erremit           : 'エラー発生時に呼び出されます。'
+, withStream        : 'Streamオブジェクトを扱う'
+, like              : function(v) { return '例：'+v }
+, notice            : '注意'
+, separator_notice  : "現在のところ、CRまたはCRLFを改行文字とする場合、その旨を以下のように指定する必要があります。"
+}
