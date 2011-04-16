@@ -31,11 +31,8 @@ Overview
       console.log(line); // each line comes here
     });
 
-    stream.on('end', function() {
-      var totalfile = fs.readFileSync(filename).toString();
-      test('equal', result, totalfile, 'incorrect read');
-      test('equal', linecount, totalfile.split(stream.delimiter).length, 'incorrect line count');
-      test('result', 'basic use test');
+    stream.on('end', function() { // emitted at the end of the file
+      console.log('end');
     });
 
     stream.on('error', function(e) {
@@ -53,11 +50,11 @@ Overview
         console.log(line); // each line comes here
       });
 
-      stream.on('end', function() {
-        console.log('end');
+      stream.on('end', function() { // emitted at the end of the response
+        console.log('end'); 
       });
 
-      stream.on('error', function(e) {
+      stream.on('error', function(e) { // emitted when an error occurred
         console.log(e);
       });
     });
