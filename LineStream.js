@@ -16,10 +16,10 @@ var fs = require('fs');
  *         other options are passed to fs.createReadStream()
  *
  *
- * Three events are available.
+ * Four events are available.
  *
- * 1. Event: 'line'
- *    function (line) {}
+ * 1. Event: 'data'
+ *    function (data) {}
  *    Emitted when the stream has received a line
  *
  * 2. Event: 'end'
@@ -30,6 +30,10 @@ var fs = require('fs');
  * 3. Event: 'error'
  *    function (e) {}
  *    Emitted if there was an error receiving data.
+ *
+ * 4. Event: 'fd'
+ *    function (e) {}
+ *    Emitted if source stream emits fd event
  *
  */
 function LineStream(arg, op) {
@@ -49,7 +53,7 @@ function LineStream(arg, op) {
   var self = this;
 
   function emitline(data) {
-    self.emit('line', data);
+    self.emit('line', data); // deprecated
     self.emit('data', data); // implementing ReadableStream
   }
 
