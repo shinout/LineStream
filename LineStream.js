@@ -32,7 +32,7 @@ var fs = require('fs');
  *    Emitted if there was an error receiving data.
  *
  * 4. Event: 'fd'
- *    function (e) {}
+ *    function (fd) {}
  *    Emitted if source stream emits fd event
  *
  */
