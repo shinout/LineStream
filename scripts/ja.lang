@@ -1,6 +1,7 @@
 { changeLogs        :
     { "0.0.1" :   "リリース"
     , "0.0.2" :   "npmに登録。"
+    , "0.1.0" :   "ReadableStreamのインターフェイスを実装"
     }
 
 , changelog         : '変更履歴'
@@ -18,6 +19,7 @@
 , erremit           : 'エラー発生時に呼び出されます。'
 , withStream        : 'Streamオブジェクトを扱う'
 , like              : function(v) { return '例：'+v }
+, pipe              : 'パイプ'
 , notice            : '注意'
 , separator_notice  : "現在のところ、CRまたはCRLFを改行文字とする場合、その旨を以下のように指定する必要があります。"
 }

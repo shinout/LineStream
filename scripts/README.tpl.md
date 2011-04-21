@@ -14,8 +14,8 @@ ${overview}
 ### ${what} ###
     ${description2}
     
-    var stream = new LineStream(file);
-    stream.on('line', function(line){
+    var stream = new LineStream(__filename);
+    stream.on('data', function(line){
       console.log(line);
     });
 
@@ -32,7 +32,7 @@ ${overview}
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('line', function(line) {
+    stream.on('data', function(line) {
       console.log(line); // ${eachline}
     });
 
@@ -51,7 +51,7 @@ ${overview}
     var req = https.request({host: 'github.com'}, function(response) {
       var stream = new LineStream(response);
 
-      stream.on('line', function(line) {
+      stream.on('data', function(line) {
         console.log(line); // ${eachline}
       });
 
@@ -65,6 +65,9 @@ ${overview}
     });
     req.end();
 
+#### ${pipe}  ####
+    var stream = new LineStream(__filename);
+    stream.pipe(process.stderr);
 
 ### ${notice} ###
 * ${separator_notice}

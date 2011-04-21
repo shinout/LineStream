@@ -1,4 +1,4 @@
-LineStream.js 0.0.2
+LineStream.js 0.1.0
 ==========
 [Node.js] EventEmitter which emits read-line events
 
@@ -7,14 +7,15 @@ Change Log
 ----------------
 * [0.0.1]: Release
 * [0.0.2]: Registered to npm
+* [0.1.0]: Implemented the interface of ReadableStream
 
 Overview
 ----------------
 ### What's this? ###
     A simple EventEmitter which emits read-line events
     
-    var stream = new LineStream(file);
-    stream.on('line', function(line){
+    var stream = new LineStream(__filename);
+    stream.on('data', function(line){
       console.log(line);
     });
 
@@ -31,7 +32,7 @@ Overview
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('line', function(line) {
+    stream.on('data', function(line) {
       console.log(line); // each line comes here
     });
 
@@ -50,7 +51,7 @@ Overview
     var req = https.request({host: 'github.com'}, function(response) {
       var stream = new LineStream(response);
 
-      stream.on('line', function(line) {
+      stream.on('data', function(line) {
         console.log(line); // each line comes here
       });
 
@@ -64,6 +65,9 @@ Overview
     });
     req.end();
 
+#### pipe  ####
+    var stream = new LineStream(__filename);
+    stream.pipe(process.stderr);
 
 ### Notice ###
 * Currently, if you'd like to set CR or CRLF as a line separator, 

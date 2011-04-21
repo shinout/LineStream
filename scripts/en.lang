@@ -1,6 +1,7 @@
 { changeLogs        :
     { "0.0.1" :   "Release"
     , "0.0.2" :   "Registered to npm"
+    , "0.1.0" :   "Implemented the interface of ReadableStream"
     }
 
 , changelog         : 'Change Log'
@@ -18,6 +19,7 @@
 , erremit           : 'emitted when an error occurred'
 , withStream        : 'with Stream'
 , like              : function(v) { return 'like '+v }
+, pipe              : 'pipe'
 , notice            : 'Notice'
 , separator_notice  : "Currently, if you'd like to set CR or CRLF as a line separator, \nyou need to set the option like belows."  
 }

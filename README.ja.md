@@ -1,4 +1,4 @@
-LineStream.js 0.0.2
+LineStream.js 0.1.0
 ==========
 [Node.js] データ１行ごとに処理できるようにするEventEmitter
 
@@ -7,14 +7,15 @@ LineStream.js 0.0.2
 ----------------
 * [0.0.1]: リリース
 * [0.0.2]: npmに登録。
+* [0.1.0]: ReadableStreamのインターフェイスを実装
 
 概要
 ----------------
 ### 要するに？ ###
     データ１行ごとに処理できるようにするEventEmitter. データはファイルまたはStream。
     
-    var stream = new LineStream(file);
-    stream.on('line', function(line){
+    var stream = new LineStream(__filename);
+    stream.on('data', function(line){
       console.log(line);
     });
 
@@ -31,7 +32,7 @@ LineStream.js 0.0.2
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('line', function(line) {
+    stream.on('data', function(line) {
       console.log(line); // 各行がここに入ります
     });
 
@@ -50,7 +51,7 @@ LineStream.js 0.0.2
     var req = https.request({host: 'github.com'}, function(response) {
       var stream = new LineStream(response);
 
-      stream.on('line', function(line) {
+      stream.on('data', function(line) {
         console.log(line); // 各行がここに入ります
       });
 
@@ -64,6 +65,9 @@ LineStream.js 0.0.2
     });
     req.end();
 
+#### パイプ  ####
+    var stream = new LineStream(__filename);
+    stream.pipe(process.stderr);
 
 ### 注意 ###
 * 現在のところ、CRまたはCRLFを改行文字とする場合、その旨を以下のように指定する必要があります。
