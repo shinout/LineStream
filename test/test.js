@@ -86,3 +86,29 @@ rstream.on('end', function() {
     }
   });
 });
+
+/**
+ * 4. norun -> resume
+ */
+var stream1 = new LineStream(filename, {bufferSize: 300, norun: true});
+
+var result1 = '';
+var linecount1 = 0;
+
+stream1.on('data', function(line) {
+  linecount1++;
+  result1 += line;
+});
+
+stream1.on('end', function() {
+  var totalfile = fs.readFileSync(filename).toString();
+  test('equal', result1, totalfile, 'incorrect read');
+  test('equal', linecount1, totalfile.split(stream.separator).length, 'incorrect line count');
+  test('result', 'resume test');
+});
+
+stream1.on('error', function(e) {
+  console.log(e);
+});
+
+stream1.resume();

@@ -41,7 +41,10 @@ function LineStream(arg, op) {
   this.separator = op.separator || '\n';
   this.lineend = op.trim ? '' : this.separator;
   this.remnant = '';
-  this.readable = true; // implementing ReadableStream
+  this.readable = false; // implementing ReadableStream
+  this.ended    = false;
+
+  this.emitted = [];
 
   if (typeof arg == 'string') {
     this.stream = fs.createReadStream(arg, op);
@@ -52,36 +55,46 @@ function LineStream(arg, op) {
 
   var self = this;
 
-  function emitline(data) {
-    self.emit('line', data); // deprecated
-    self.emit('data', data); // implementing ReadableStream
-  }
-
   this.stream.on('data', function(data) {
     var chunk = self.remnant + data;
     var lines = chunk.split(self.separator);
     self.remnant = lines.pop();
     lines.forEach(function(line) {
-      emitline(line + self.lineend);
+      emit.call(self, 'data', line + self.lineend);
     });
   });
 
-  this.stream.on('fd', function(fd) {
-    self.emit('fd', fd);  // implementing ReadableStream
-  });
-
   this.stream.on('end', function() {
-    emitline(self.remnant);
-    self.emit('end'); // implementing ReadableStream
-    this.readable = false;
+    emit.call(self, 'data', self.remnant);
+    emit.call(self, 'end'); // implementing ReadableStream
+    // this.readable = false;
   });
 
-  this.stream.on('error', function(e) {
-    self.emit('error'); // implementing ReadableStream
-  });
+  this.stream.on('fd', emit.bind(this, 'fd'));
+  this.stream.on('error', emit.bind(this, 'error'));
+
+  this.readable = !op.norun;
+}
+
+function emit() {
+  if (arguments.length) this.emitted.push(arguments);
+  while (this.readable && this.emitted.length && !this.ended) {
+    var emitArgs = this.emitted.shift();
+    this.emit.apply(this, emitArgs);
+    if (emitArgs[0] == 'end') {
+      this.readable = false;
+      this.ended    = true;
+    }
+  }
 }
 
 LineStream.prototype = new EventEmitter();
+
+LineStream.prototype.resume = function() {
+  if (this.ended || this.readable) return;
+  this.readable = true;
+  this.emit();
+};
 
 LineStream.prototype.setEncoding = function(encoding) { // implementing ReadableStream
   // do nothing. because this stream only supports utf-8 text format
@@ -89,10 +102,6 @@ LineStream.prototype.setEncoding = function(encoding) { // implementing Readable
 
 LineStream.prototype.pause = function() { // implementing ReadableStream
   this.stream.pause();
-}
-
-LineStream.prototype.resume = function() { // implementing ReadableStream
-  this.stream.resume();
 }
 
 LineStream.prototype.destroy = function() { // implementing ReadableStream
