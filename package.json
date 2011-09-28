@@ -1,6 +1,6 @@
 {
   "name": "linestream"
-, "version": "0.1.0"
+, "version": "0.2.0"
 , "description": "A simple EventEmitter which emits read-line events."
 , "tags": ["EventEmitter", "node", "file", "readline", "line"]
 , "author": "SHIN Suzuki <shinout310@gmail.com>"

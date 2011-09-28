@@ -118,5 +118,5 @@ LineStream.prototype.pipe = function() { //MARUNAGE
  return process.stdin.pipe.apply(this, arguments);
 } 
 
-LineStream.version = '0.1.0';
+LineStream.version = '0.2.0';
 module.exports = LineStream;
