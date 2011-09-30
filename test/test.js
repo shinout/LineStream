@@ -1,7 +1,7 @@
 var LineStream = require('../LineStream');
-var test = require('./shinout.test');
 var fs = require('fs');
 var filename = __filename;
+if (typeof global != 'undefined') require('./load.test').load(global);
 
 
 /**
@@ -19,9 +19,8 @@ stream.on('data', function(line) {
 
 stream.on('end', function() {
   var totalfile = fs.readFileSync(filename).toString();
-  test('equal', result, totalfile, 'incorrect read');
-  test('equal', linecount, totalfile.split(stream.separator).length, 'incorrect line count');
-  test('result', 'basic use test');
+  T.equal(result, totalfile, 'read');
+  T.equal(linecount, totalfile.split(stream.separator).length, 'line count');
 });
 
 stream.on('error', function(e) {
@@ -33,9 +32,9 @@ stream.on('error', function(e) {
 /**
  * 2. Stream to lines
  */
-var https = require('https');
+var http = require('http');
 
-var req = https.request({host: 'github.com'}, function(res) {
+var req = http.request({host: 'localhost'}, function(res) {
   var stream = new LineStream(res);
   var count = 0;
   var data = '';
@@ -46,13 +45,15 @@ var req = https.request({host: 'github.com'}, function(res) {
   });
 
   stream.on('end', function() {
-    test('equal', count, data.split(stream.separator).length, 'incorrect line count');
-    test('result', 'stream to line test');
+    T.equal(count, data.split(stream.separator).length, 'line count');
   });
 
   stream.on('error', function(e) {
     console.log(e);
   });
+});
+req.on("error", function(e) {
+  console.ered(e.stack)
 });
 
 req.end();
@@ -74,23 +75,23 @@ rstream.pipe(wstream);
 rstream.on('end', function() {
   var thisfile  = fs.readFileSync(filename).toString();
   var cpfile = fs.readFileSync(wfilename).toString();
-  test('equal', thisfile, cpfile, 'incorrect read');
-  test('result', 'pipe test');
+  T.equal(thisfile, cpfile, 'read');
+
   var exec = require('child_process').exec;
   exec('rm ' + wfilename, function(err, stdout, stderr) {
     if (!err) {
-      console.log("/* a created test file was deleted correctly. */");
+      console.green("a created test file was deleted correctly.");
     }
     else {
-      console.log(err);
+      console.ered(err);
     }
   });
 });
 
 /**
- * 4. norun -> resume
+ * 4. pause -> resume
  */
-var stream1 = new LineStream(filename, {bufferSize: 300, norun: true});
+var stream1 = new LineStream(filename, {bufferSize: 300, pause: true});
 
 var result1 = '';
 var linecount1 = 0;
@@ -102,13 +103,14 @@ stream1.on('data', function(line) {
 
 stream1.on('end', function() {
   var totalfile = fs.readFileSync(filename).toString();
-  test('equal', result1, totalfile, 'incorrect read');
-  test('equal', linecount1, totalfile.split(stream.separator).length, 'incorrect line count');
-  test('result', 'resume test');
+  T.equal(result1, totalfile, 'read (resume)');
+  T.equal(linecount1, totalfile.split(stream.separator).length, 'line count(resume)');
 });
 
 stream1.on('error', function(e) {
   console.log(e);
 });
 
-stream1.resume();
+setTimeout(function() {
+  stream1.resume();
+}, 1000);

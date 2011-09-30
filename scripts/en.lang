@@ -2,6 +2,8 @@
     { "0.0.1" :   "Release"
     , "0.0.2" :   "Registered to npm"
     , "0.1.0" :   "Implemented the interface of ReadableStream"
+    , "0.2.0" :   "Implemented resume()"
+    , "0.2.1" :   "Implemented pause()"
     }
 
 , changelog         : 'Change Log'

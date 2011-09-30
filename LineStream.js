@@ -41,8 +41,8 @@ function LineStream(arg, op) {
   this.separator = op.separator || '\n';
   this.lineend = op.trim ? '' : this.separator;
   this.remnant = '';
-  this.readable = false; // implementing ReadableStream
-  this.ended    = false;
+  this.readable = true; // implementing ReadableStream
+  this.paused   = !!op.pause;
 
   this.emitted = [];
 
@@ -67,23 +67,19 @@ function LineStream(arg, op) {
   this.stream.on('end', function() {
     emit.call(self, 'data', self.remnant);
     emit.call(self, 'end'); // implementing ReadableStream
-    // this.readable = false;
   });
 
   this.stream.on('fd', emit.bind(this, 'fd'));
   this.stream.on('error', emit.bind(this, 'error'));
-
-  this.readable = !op.norun;
 }
 
 function emit() {
   if (arguments.length) this.emitted.push(arguments);
-  while (this.readable && this.emitted.length && !this.ended) {
+  while (!this.paused && this.emitted.length && this.readable) {
     var emitArgs = this.emitted.shift();
     this.emit.apply(this, emitArgs);
     if (emitArgs[0] == 'end') {
       this.readable = false;
-      this.ended    = true;
     }
   }
 }
@@ -91,17 +87,16 @@ function emit() {
 LineStream.prototype = new EventEmitter();
 
 LineStream.prototype.resume = function() {
-  if (this.ended || this.readable) return;
-  this.readable = true;
-  this.emit();
+  this.paused = false;
+  emit.call(this);
 };
+
+LineStream.prototype.pause = function() { // implementing ReadableStream
+  this.paused = true;
+}
 
 LineStream.prototype.setEncoding = function(encoding) { // implementing ReadableStream
   // do nothing. because this stream only supports utf-8 text format
-}
-
-LineStream.prototype.pause = function() { // implementing ReadableStream
-  this.stream.pause();
 }
 
 LineStream.prototype.destroy = function() { // implementing ReadableStream
@@ -118,5 +113,5 @@ LineStream.prototype.pipe = function() { //MARUNAGE
  return process.stdin.pipe.apply(this, arguments);
 } 
 
-LineStream.version = '0.2.0';
+LineStream.version = '0.2.1';
 module.exports = LineStream;
