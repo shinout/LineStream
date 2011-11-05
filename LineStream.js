@@ -11,7 +11,8 @@ var fs = require('fs');
  *
  * @param op object 
  *         separator string   : line separator. default: '\n'
- *         trim      boolean  : if true, not add a line separator to the end of line
+ *         trim      boolean  : if true, not add a line separator to the end of line. 
+ *                              default true.
  *
  *         other options are passed to fs.createReadStream()
  *
@@ -19,8 +20,9 @@ var fs = require('fs');
  * Four events are available.
  *
  * 1. Event: 'data'
- *    function (data) {}
+ *    function (data, isEnd) {}
  *    Emitted when the stream has received a line
+ *    isEnd: boolean. if it is the end of the data or not.
  *
  * 2. Event: 'end'
  *    function () {}
@@ -39,7 +41,7 @@ var fs = require('fs');
 function LineStream(arg, op) {
   op = op || {};
   this.separator = op.separator || '\n';
-  this.lineend = op.trim ? '' : this.separator;
+  this.lineend = (op.trim === false) ? this.separator : '';
   this.remnant = '';
   this.readable = true; // implementing ReadableStream
   this.paused   = !!op.pause;
@@ -60,12 +62,12 @@ function LineStream(arg, op) {
     var lines = chunk.split(self.separator);
     self.remnant = lines.pop();
     lines.forEach(function(line) {
-      emit.call(self, 'data', line + self.lineend);
+      emit.call(self, 'data', line + self.lineend, false);
     });
   });
 
   this.stream.on('end', function() {
-    emit.call(self, 'data', self.remnant);
+    emit.call(self, 'data', self.remnant, true);
     emit.call(self, 'end'); // implementing ReadableStream
   });
 
@@ -113,5 +115,5 @@ LineStream.prototype.pipe = function() { //MARUNAGE
  return process.stdin.pipe.apply(this, arguments);
 } 
 
-LineStream.version = '0.2.1';
+LineStream.version = '0.2.2';
 module.exports = LineStream;

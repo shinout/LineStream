@@ -32,8 +32,9 @@ ${overview}
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('data', function(line) {
+    stream.on('data', function(line, isEnd) {
       console.log(line); // ${eachline}
+      console.log(isEnd); // if it is the end of data or not.
     });
 
     stream.on('end', function() { // ${endemit(file)}

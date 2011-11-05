@@ -8,6 +8,8 @@ LineStream.js 0.2.1
 * [0.0.1]: リリース
 * [0.0.2]: npmに登録。
 * [0.1.0]: ReadableStreamのインターフェイスを実装
+* [0.2.0]: resume()で再開できるようにした
+* [0.2.1]: pause()で処理をとめられるようにした
 
 概要
 ----------------
@@ -32,8 +34,9 @@ LineStream.js 0.2.1
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('data', function(line) {
+    stream.on('data', function(line, isEnd) {
       console.log(line); // 各行がここに入ります
+      console.log(isEnd); // if it is the end of data or not.
     });
 
     stream.on('end', function() { // ファイルの終わりに実行されます。

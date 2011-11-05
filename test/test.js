@@ -7,7 +7,7 @@ if (typeof global != 'undefined') require('./load.test').load(global);
 /**
  * 1. file to lines
  */
-var stream = new LineStream(filename, {bufferSize: 300});
+var stream = new LineStream(filename, {bufferSize: 300, trim: false});
 
 var result = '';
 var linecount = 0;
@@ -35,7 +35,7 @@ stream.on('error', function(e) {
 var http = require('http');
 
 var req = http.request({host: 'localhost'}, function(res) {
-  var stream = new LineStream(res);
+  var stream = new LineStream(res, {trim : false});
   var count = 0;
   var data = '';
 
@@ -67,7 +67,7 @@ req.on('error', function(e) {
  * 3. pipe
  */
 
-var rstream = new LineStream(filename, {bufferSize: 300});
+var rstream = new LineStream(filename, {bufferSize: 300, trim: false});
 var wfilename = __dirname + '/cp' + Math.random().toString().replace('.','') + '.js';
 var wstream = fs.createWriteStream(wfilename);
 rstream.pipe(wstream);
@@ -91,7 +91,7 @@ rstream.on('end', function() {
 /**
  * 4. pause -> resume
  */
-var stream1 = new LineStream(filename, {bufferSize: 300, pause: true});
+var stream1 = new LineStream(filename, {bufferSize: 300, pause: true, trim: false});
 
 var result1 = '';
 var linecount1 = 0;

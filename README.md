@@ -8,6 +8,8 @@ Change Log
 * [0.0.1]: Release
 * [0.0.2]: Registered to npm
 * [0.1.0]: Implemented the interface of ReadableStream
+* [0.2.0]: Implemented resume()
+* [0.2.1]: Implemented pause()
 
 Overview
 ----------------
@@ -32,8 +34,9 @@ Overview
     var LineStream = require('/path/to/LineStream');
     var stream = new LineStream(filename, {bufferSize: 300});
 
-    stream.on('data', function(line) {
+    stream.on('data', function(line, isEnd) {
       console.log(line); // each line comes here
+      console.log(isEnd); // if it is the end of data or not.
     });
 
     stream.on('end', function() { // emitted at the end of file
