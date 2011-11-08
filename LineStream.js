@@ -54,6 +54,7 @@ function LineStream(arg, op) {
   else {
     this.stream = arg;
   }
+  this.stream.setEncoding("utf8");
 
   var self = this;
 
