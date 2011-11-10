@@ -1,4 +1,4 @@
-LineStream.js 0.2.2
+LineStream.js 0.2.4
 ==========
 [Node.js] データ１行ごとに処理できるようにするEventEmitter
 
@@ -10,6 +10,9 @@ LineStream.js 0.2.2
 * [0.1.0]: ReadableStreamのインターフェイスを実装
 * [0.2.0]: resume()で再開できるようにした
 * [0.2.1]: pause()で処理をとめられるようにした
+* [0.2.2]: trimのデフォルト値をtrueにした
+* [0.2.3]: setEncoding('utf8')にした
+* [0.2.4]: trimがtrueのときは最後の改行後の値をemitしないようにした
 
 概要
 ----------------

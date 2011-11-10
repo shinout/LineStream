@@ -1,6 +1,6 @@
 {
   "name": "linestream"
-, "version": "0.2.3"
+, "version": "0.2.4"
 , "description": "A simple EventEmitter which emits read-line events."
 , "tags": ["EventEmitter", "node", "file", "readline", "line"]
 , "author": "SHIN Suzuki <shinout310@gmail.com>"
@@ -8,7 +8,7 @@
   { "type": "git"
   ,  "url": "https://github.com/shinout/LineStream.git"
   }
-, "bugs": {"url": "https://github.com/shinout/LineStream/issues" }
+, "bugs": {"web": "https://github.com/shinout/LineStream/issues" }
 , "licences": 
   [ { "type": "MIT"
     , "url": "https://github.com/shinout/LineStream/raw/master/LICENCE"

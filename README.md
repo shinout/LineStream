@@ -1,4 +1,4 @@
-LineStream.js 0.2.2
+LineStream.js 0.2.4
 ==========
 [Node.js] EventEmitter which emits read-line events
 
@@ -10,6 +10,9 @@ Change Log
 * [0.1.0]: Implemented the interface of ReadableStream
 * [0.2.0]: Implemented resume()
 * [0.2.1]: Implemented pause()
+* [0.2.2]: the default value of options.trim be true
+* [0.2.3]: setEncoding('utf8') to given streams
+* [0.2.4]: if option.trim, the value after the last \n is not emitted.
 
 Overview
 ----------------
