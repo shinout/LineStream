@@ -1,8 +1,8 @@
 {
   "name": "linestream"
 , "version": "${version}"
-, "description": "A simple EventEmitter which emits read-line events."
-, "tags": ["EventEmitter", "node", "file", "readline", "line"]
+, "description": "a readable stream emitting lines (from files, streams)"
+, "tags": ["stream", "ReadableStream", "EventEmitter", "node", "file", "readline", "line"]
 , "author": "SHIN Suzuki <shinout310@gmail.com>"
 , "repository": 
   { "type": "git"
