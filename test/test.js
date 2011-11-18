@@ -72,9 +72,10 @@ var wfilename = __dirname + '/cp' + Math.random().toString().replace('.','') + '
 var wstream = fs.createWriteStream(wfilename);
 rstream.pipe(wstream);
 
-rstream.on('end', function() {
+wstream.on('close', function() {
   var thisfile  = fs.readFileSync(filename).toString();
   var cpfile = fs.readFileSync(wfilename).toString();
+  console.log(thisfile.length, cpfile.length);
   T.equal(thisfile, cpfile, 'read');
 
   var exec = require('child_process').exec;

@@ -191,7 +191,7 @@ LineStream.prototype = new EventEmitter();
 
 
 /**
- * resume emitting
+ * @see ReadableStream
  **/
 LineStream.prototype.resume = function() {
   this.paused = false;
@@ -200,37 +200,60 @@ LineStream.prototype.resume = function() {
 
 
 /**
- * pause emitting
+ * @see ReadableStream
  **/
-LineStream.prototype.pause = function() { // implementing ReadableStream
+LineStream.prototype.pause = function() {
   this.paused = true;
 }
 
 
 /**
- * implementing ReadableStream
+ * @see ReadableStream
  **/
-
-LineStream.prototype.setEncoding = function(encoding) { // implementing ReadableStream
+LineStream.prototype.setEncoding = function(encoding) {
   // do nothing. because this stream only supports utf-8 text format
 }
 
 
-LineStream.prototype.destroy = function() { // implementing ReadableStream
+/**
+ * @see ReadableStream
+ **/
+LineStream.prototype.destroy = function() {
   this.stream.destroy();
   this.readable = false;
 }
 
 
-LineStream.prototype.destroySoon = function() { // implementing ReadableStream
-  // Not knowing what to do, this remains unimplemented...
+/**
+ * @see ReadableStream
+ **/
+LineStream.prototype.destroySoon = function() {
+  // Not knowing what to do, this should not be called currently
   this.destroy();
 }
 
 
-LineStream.prototype.pipe = function() { //MARUNAGE
- return process.stdin.pipe.apply(this, arguments);
-} 
+/**
+ * @see ReadableStream
+ **/
+LineStream.prototype.pipe = function(wstream, options) {
+  options || (options = {});
+
+  wstream.emit("pipe", this);
+
+  this.on("data", function(d) {
+    var bool = wstream.write(d);
+  });
+
+  if (options.end !== false) {
+    this.on("end", function() {
+      wstream.end();
+    });
+  }
+
+  return wstream;
+};
+
 
 
 LineStream.version = '0.2.5';
