@@ -1,4 +1,4 @@
-LineStream.js 0.2.5
+LineStream.js 0.2.6
 ==========
 [Node.js] EventEmitter which emits read-line events
 
