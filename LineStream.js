@@ -256,5 +256,5 @@ LineStream.prototype.pipe = function(wstream, options) {
 
 
 
-LineStream.version = '0.2.6';
+LineStream.version = '0.2.7';
 module.exports = LineStream;

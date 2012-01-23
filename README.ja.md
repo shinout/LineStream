@@ -1,4 +1,4 @@
-LineStream.js 0.2.6
+LineStream.js 0.2.7
 ==========
 [Node.js] データ１行ごとに処理できるようにするEventEmitter
 
