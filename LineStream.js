@@ -172,7 +172,7 @@ function emit() {
  **/
 function emitLine(line, isEnd) {
   if (this.filters.every(function(fn) { return fn(line) }))
-    emit.call(this, 'data', line, false);
+    emit.call(this, 'data', line, !!isEnd);
 }
 
 /**
@@ -181,7 +181,7 @@ function emitLine(line, isEnd) {
  * (private method)
  **/
 function emitLineWithoutFilter(line, isEnd) {
-  emit.call(this, 'data', line, false);
+  emit.call(this, 'data', line, !!isEnd);
 }
 
 /**
