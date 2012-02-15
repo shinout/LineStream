@@ -255,6 +255,27 @@ LineStream.prototype.pipe = function(wstream, options) {
 };
 
 
+LineStream.create = function() {
+  var args = Array.prototype.slice.call(arguments);
+  var arg = args.shift();
+  var fn, op;
+  switch (args.length) {
+    default:
+    case 0: break;
+    case 1: 
+      if (typeof args[0] == "function") fn = args[0];
+      else op = args[0];
+      break;
+    case 2:
+      op = args[0];
+      fn = args[1];
+      break;
+  }
+  var lines = new LineStream(arg, op);
+  if (typeof fn == "function") {
+    lines.on("data", fn);
+  }
+};
 
-LineStream.version = '0.2.7';
+LineStream.version = '0.2.8';
 module.exports = LineStream;

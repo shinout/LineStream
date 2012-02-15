@@ -1,4 +1,4 @@
-LineStream.js 0.2.7
+LineStream.js 0.2.8
 ==========
 [Node.js] EventEmitter which emits read-line events
 
@@ -14,6 +14,7 @@ Change Log
 * [0.2.3]: setEncoding('utf8') to given streams
 * [0.2.4]: if option.trim, the value after the last \n is not emitted.
 * [0.2.5]: implemented filter function with fieldSep, fieldNum, empty, comment and filter()
+* [0.2.8]: LineStream.create() : for simple use
 
 Overview
 ----------------
