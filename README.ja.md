@@ -1,4 +1,4 @@
-LineStream.js 0.2.8
+LineStream.js 0.2.9
 ==========
 [Node.js] データ１行ごとに処理できるようにするEventEmitter
 
@@ -15,6 +15,7 @@ LineStream.js 0.2.8
 * [0.2.4]: trimがtrueのときは最後の改行後の値をemitしないようにした
 * [0.2.5]: fieldNum, fieldSep, empty, comment, filter によるフィルタの実装
 * [0.2.8]: LineStream.create() : newしないでつかえるように
+* [0.2.9]: LineStream.tsv()
 
 概要
 ----------------

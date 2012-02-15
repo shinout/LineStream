@@ -277,5 +277,16 @@ LineStream.create = function() {
   }
 };
 
-LineStream.version = '0.2.8';
+LineStream.tsv = function() {
+  var args = Array.prototype.slice.call(arguments);
+  var arg = args.shift();
+  var fn  = args.pop();
+  var lines = new LineStream(arg, args.length? args[0]: null);
+  lines.on("data", function(line, isEnd) {
+    if (!line.trim()) return;
+    fn(line.split("\t"), isEnd);
+  });
+};
+
+LineStream.version = '0.2.9';
 module.exports = LineStream;
