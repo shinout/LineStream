@@ -10,6 +10,7 @@
     , "0.2.5" :   "fieldNum, fieldSep, empty, comment, filter によるフィルタの実装"
     , "0.2.8" :   "LineStream.create() : newしないでつかえるように"
     , "0.2.9" :   "LineStream.tsv()"
+    , "0.3.0" :   "LineStream.after()"
     }
 
 , changelog         : '変更履歴'

@@ -1,4 +1,4 @@
-LineStream.js 0.2.9
+LineStream.js 0.3.0
 ==========
 [Node.js] EventEmitter which emits read-line events
 
@@ -16,6 +16,7 @@ Change Log
 * [0.2.5]: implemented filter function with fieldSep, fieldNum, empty, comment and filter()
 * [0.2.8]: LineStream.create() : for simple use
 * [0.2.9]: LineStream.tsv()
+* [0.3.0]: LineStream.after()
 
 Overview
 ----------------

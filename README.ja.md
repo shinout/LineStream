@@ -1,4 +1,4 @@
-LineStream.js 0.2.9
+LineStream.js 0.3.0
 ==========
 [Node.js] データ１行ごとに処理できるようにするEventEmitter
 
@@ -16,6 +16,7 @@ LineStream.js 0.2.9
 * [0.2.5]: fieldNum, fieldSep, empty, comment, filter によるフィルタの実装
 * [0.2.8]: LineStream.create() : newしないでつかえるように
 * [0.2.9]: LineStream.tsv()
+* [0.3.0]: LineStream.after()
 
 概要
 ----------------

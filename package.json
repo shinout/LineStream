@@ -1,6 +1,6 @@
 {
   "name": "linestream"
-, "version": "0.2.9"
+, "version": "0.3.0"
 , "description": "a readable stream emitting lines (from files, streams)"
 , "tags": ["stream", "ReadableStream", "EventEmitter", "node", "file", "readline", "line"]
 , "author": "SHIN Suzuki <shinout310@gmail.com>"

@@ -195,6 +195,7 @@ LineStream.prototype = new EventEmitter();
  **/
 LineStream.prototype.resume = function() {
   this.paused = false;
+  this.stream.resume();
   emit.call(this);
 };
 
@@ -204,6 +205,7 @@ LineStream.prototype.resume = function() {
  **/
 LineStream.prototype.pause = function() {
   this.paused = true;
+  this.stream.pause();
 }
 
 
@@ -250,43 +252,50 @@ LineStream.prototype.pipe = function(wstream, options) {
       wstream.end();
     });
   }
-
   return wstream;
 };
 
 
-LineStream.create = function() {
-  var args = Array.prototype.slice.call(arguments);
-  var arg = args.shift();
-  var fn, op;
-  switch (args.length) {
-    default:
-    case 0: break;
-    case 1: 
-      if (typeof args[0] == "function") fn = args[0];
-      else op = args[0];
-      break;
-    case 2:
-      op = args[0];
-      fn = args[1];
-      break;
-  }
-  var lines = new LineStream(arg, op);
-  if (typeof fn == "function") {
-    lines.on("data", fn);
-  }
+LineStream.prototype.after = function() {
+  var streams = Array.prototype.slice.call(arguments);
+  if (!streams.length) return this;
+  if (this.emitted.length) throw new Error("cannot call after() to already-emitted stream");
+
+  this.pause();
+
+  var self = this;
+
+  var streams = Array.prototype.slice.call(arguments);
+  var remains = streams.length;
+
+  streams.forEach(function(rstream) {
+    rstream.on("end", function() {
+      remains--;
+      if (remains == 0) self.resume();
+    });
+  });
+  return this;
 };
+
 
 LineStream.tsv = function() {
   var args = Array.prototype.slice.call(arguments);
   var arg = args.shift();
   var fn  = args.pop();
+
+  if (arg == '-') {
+    arg = process.stdin;
+    process.stdin.resume();
+  }
+
   var lines = new LineStream(arg, args.length? args[0]: null);
+
   lines.on("data", function(line, isEnd) {
     if (!line.trim()) return;
-    fn(line.split("\t"), isEnd);
+    fn(line.split("\t"), line, isEnd);
   });
+  return lines;
 };
 
-LineStream.version = '0.2.9';
+LineStream.version = '0.3.0';
 module.exports = LineStream;
