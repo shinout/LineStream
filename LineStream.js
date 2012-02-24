@@ -297,5 +297,4 @@ LineStream.tsv = function() {
   return lines;
 };
 
-LineStream.version = '0.3.0';
 module.exports = LineStream;
