@@ -1,47 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
+var Stream = require('stream').Stream;
 var fs = require('fs');
 
-/**
- * LineStream: constructor
- * 
- * @implements ReadableStream
- * 
- * @param arg string : file path
- *        arg Stream : stream
- *
- * @param op object 
- *         separator string   : line separator. default: '\n'
- *         trim      boolean  : if true, not add a line separator to the end of line. default true.
- *         pause     boolean  : if true, not emitting lines unless resume() is called.
- *         fieldSep  string   : field separator. default null (no separating).
- *         fieldNum  number   : required minimum number of the fields. default null
- *         filter    function : line filter, return true to pass the filter.
- *         comment   string   : comment mark. if there's a comment mark in the first chars, filter it. default null.
- *         empty     boolean  : allow empty line. default true.
- *
- *         other options are passed to fs.createReadStream()
- *
- * Four events are available.
- *
- * 1. Event: 'data'
- *    function (data, isEnd) {}
- *    Emitted when the stream has received a line
- *    isEnd: boolean. if it is the end of the data or not.
- *
- * 2. Event: 'end'
- *    function () {}
- *    Emitted when the upper stream has emitted an 'end' event 
- *    No lines remain after this event happens.
- *
- * 3. Event: 'error'
- *    function (e) {}
- *    Emitted if there was an error receiving data.
- *
- * 4. Event: 'fd'
- *    function (fd) {}
- *    Emitted if source stream emits fd event
- *
- **/
 function LineStream(arg, op) {
   op = op || {};
   this.separator = op.separator || '\n';
@@ -147,48 +107,15 @@ function LineStream(arg, op) {
   this.stream.on('error', emit.bind(this, 'error'));
 }
 
-
-/**
- * add emit events to the event queue.
- *
- * (private method)
- **/
-function emit() {
-  if (arguments.length) this.emitted.push(arguments);
-  while (!this.paused && this.emitted.length && this.readable) {
-    var emitArgs = this.emitted.shift();
-    this.emit.apply(this, emitArgs);
-    if (emitArgs[0] == 'end') {
-      this.readable = false;
-    }
-  }
-}
+LineStream.create = function(arg, op) {
+  return new LineStream(arg, op);
+};
 
 
 /**
- * emit data event if the given line is valid.
- *
- * (private method)
+ * extends Stream
  **/
-function emitLine(line, isEnd) {
-  if (this.filters.every(function(fn) { return fn(line) }))
-    emit.call(this, 'data', line, !!isEnd);
-}
-
-/**
- * emit data event
- *
- * (private method)
- **/
-function emitLineWithoutFilter(line, isEnd) {
-  emit.call(this, 'data', line, !!isEnd);
-}
-
-/**
- * extends EventEmitter
- **/
-LineStream.prototype = new EventEmitter();
-
+require('util').inherits(LineStream, Stream);
 
 /**
  * @see ReadableStream
@@ -235,27 +162,6 @@ LineStream.prototype.destroySoon = function() {
 }
 
 
-/**
- * @see ReadableStream
- **/
-LineStream.prototype.pipe = function(wstream, options) {
-  options || (options = {});
-
-  wstream.emit("pipe", this);
-
-  this.on("data", function(d) {
-    var bool = wstream.write(d);
-  });
-
-  if (options.end !== false) {
-    this.on("end", function() {
-      wstream.end();
-    });
-  }
-  return wstream;
-};
-
-
 LineStream.prototype.after = function() {
   var streams = Array.prototype.slice.call(arguments);
   if (!streams.length) return this;
@@ -296,5 +202,43 @@ LineStream.tsv = function() {
   });
   return lines;
 };
+
+
+
+/**
+ * add emit events to the event queue.
+ *
+ * (private method)
+ **/
+function emit() {
+  if (arguments.length) this.emitted.push(arguments);
+  while (!this.paused && this.emitted.length && this.readable) {
+    var emitArgs = this.emitted.shift();
+    this.emit.apply(this, emitArgs);
+    if (emitArgs[0] == 'end') {
+      this.readable = false;
+    }
+  }
+}
+
+
+/**
+ * emit data event if the given line is valid.
+ *
+ * (private method)
+ **/
+function emitLine(line, isEnd) {
+  if (this.filters.every(function(fn) { return fn(line) }))
+    emit.call(this, 'data', line, !!isEnd);
+}
+
+/**
+ * emit data event
+ *
+ * (private method)
+ **/
+function emitLineWithoutFilter(line, isEnd) {
+  emit.call(this, 'data', line, !!isEnd);
+}
 
 module.exports = LineStream;

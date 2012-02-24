@@ -1,50 +1,25 @@
-LineStream.js 0.3.0
+LineStream.js
 ==========
-[Node.js] EventEmitter which emits read-line events
+[Node.js] ReadableStream of lines
 
-Change Log
+## Installation ##
 
-----------------
-* [0.0.1]: Release
-* [0.0.2]: Registered to npm
-* [0.1.0]: Implemented the interface of ReadableStream
-* [0.2.0]: Implemented resume()
-* [0.2.1]: Implemented pause()
-* [0.2.2]: the default value of options.trim be true
-* [0.2.3]: setEncoding('utf8') to given streams
-* [0.2.4]: if option.trim, the value after the last \n is not emitted.
-* [0.2.5]: implemented filter function with fieldSep, fieldNum, empty, comment and filter()
-* [0.2.8]: LineStream.create() : for simple use
-* [0.2.9]: LineStream.tsv()
-* [0.3.0]: LineStream.after()
-
-Overview
-----------------
-### What's this? ###
-    A simple EventEmitter which emits read-line events
-    
-    var stream = new LineStream(__filename);
-    stream.on('data', function(line){
-      console.log(line);
-    });
-
-
-### Installation ###
-    git clone git://github.com/shinout/LineStream.git
+    $ npm install linestream
 
     OR
 
-    npm install linestream
+    $ git clone git://github.com/shinout/LineStream.git
 
-### Usage ###
-#### with file ####
-    var LineStream = require('/path/to/LineStream');
-    var stream = new LineStream(filename, {bufferSize: 300});
+## sample ##
+
+### with file ###
+
+    var stream = require('linestream').create(filename, {bufferSize: 300});
 
     stream.on('data', function(line, isEnd) {
       console.log(line); // each line comes here
       console.log(isEnd); // if it is the end of data or not.
-    });
+    })
 
     stream.on('end', function() { // emitted at the end of file
       console.log('end');
@@ -55,32 +30,65 @@ Overview
     });
 
 
+### with Stream (like HttpResponse) ###
 
-#### with Stream (like HttpResponse) ####
     var https = require('https');
     var req = https.request({host: 'github.com'}, function(response) {
-      var stream = new LineStream(response);
+      var stream = require('linestream').create(response);
 
       stream.on('data', function(line) {
         console.log(line); // each line comes here
       });
-
-      stream.on('end', function() { // emitted at the end of response
-        console.log('end'); 
-      });
-
-      stream.on('error', function(e) { // emitted when an error occurred
-        console.log(e);
-      });
     });
     req.end();
 
-#### pipe  ####
-    var stream = new LineStream(__filename);
-    stream.pipe(process.stderr);
+## API Documentation ##
 
 ### Notice ###
 * Currently, if you'd like to set CR or CRLF as a line separator, 
 you need to set the option like belows.
     var stream = new LineStream(filename, {separator: '\r'});   //CR
     var stream = new LineStream(filename, {separator: '\r\n'}); // CRLF
+
+
+
+
+
+LineStream: constructor
+
+@implements ReadableStream
+
+@param arg string : file path
+       arg Stream : stream
+
+@param op object 
+        separator string   : line separator. default: '\n'
+        trim      boolean  : if true, not add a line separator to the end of line. default true.
+        pause     boolean  : if true, not emitting lines unless resume() is called.
+        fieldSep  string   : field separator. default null (no separating).
+        fieldNum  number   : required minimum number of the fields. default null
+        filter    function : line filter, return true to pass the filter.
+        comment   string   : comment mark. if there's a comment mark in the first chars, filter it. default null.
+        empty     boolean  : allow empty line. default true.
+
+        other options are passed to fs.createReadStream()
+
+Four events are available.
+
+1. Event: 'data'
+   function (data, isEnd) {}
+   Emitted when the stream has received a line
+   isEnd: boolean. if it is the end of the data or not.
+
+2. Event: 'end'
+   function () {}
+   Emitted when the upper stream has emitted an 'end' event 
+   No lines remain after this event happens.
+
+3. Event: 'error'
+   function (e) {}
+   Emitted if there was an error receiving data.
+
+4. Event: 'fd'
+   function (fd) {}
+    Emitted if source stream emits fd event
