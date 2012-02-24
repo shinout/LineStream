@@ -26,7 +26,7 @@ LineStream.js
     });
 
     stream.on('error', function(e) { // emitted when an error occurred
-      console.log(e);
+      console.error(e);
     });
 
 
@@ -44,51 +44,129 @@ LineStream.js
 
 ## API Documentation ##
 
-### Notice ###
-* Currently, if you'd like to set CR or CRLF as a line separator, 
-you need to set the option like belows.
-    var stream = new LineStream(filename, {separator: '\r'});   //CR
-    var stream = new LineStream(filename, {separator: '\r\n'}); // CRLF
+LineStream extends ReadableStream.
+
+See [Node.js#Stream](http://nodejs.org/docs/latest/api/streams.html#readable_Stream) for ReadableStream's API.
 
 
+- LineStream.create(source, options)
+- on "data"
+- LineStream.tsv(source, [options], fn)
+- stream.after(rstream1, rstream2, ...)
+
+### LineStream.create(source, options) ###
+
+Creates an instance of LineStream.
+
+**source** is the one of the followings.
+
+- (string) filename. Then reads the file and emit each lines.
+- "-". Then resumes **process.stdin** and reads from it.
+- (ReadableStream) stream. Then reads lines from the stream.
+
+(Object) **options** is optional.
+
+<table>
+<tr><th>key</th>
+<td>type</td>
+<td>description</td>
+<td>example</td></tr>
+
+<tr><th>separator</th>
+<td>string</td>
+<td>line separator. "\n" by default.<br>
+</td>
+<td>"\r"</td></tr>
+
+<tr><th>trim</th>
+<td>boolean</td>
+<td>If true, separator are not appended in the line. <strong>true by default</strong>.<br>
+</td>
+<td>false</td></tr>
 
 
+<tr><th>filter</th>
+<td>function</td>
+<td>filter function before emitting lines.<br>
+each line is passed to the function as the first argument.
+</td>
+<td>function (line) { return line.length }</td></tr>
 
-LineStream: constructor
+<tr><th>comment</th>
+<td>string</td>
+<td>Registers the marks of one-line comment.
+If the mark comes in the first position of a line, the line is filtered.
+</td>
+<td>"#"</td></tr>
 
-@implements ReadableStream
+<tr><th>fieldSep</th>
+<td>string</td>
+<td>A field separator. It is used with <strong>fieldNum</strong> options.
+</td>
+<td>"\t"</td></tr>
 
-@param arg string : file path
-       arg Stream : stream
+<tr><th>fieldNum</th>
+<td>string</td>
+<td>the required number of the fields.<br>
+If not matched, the line is filtered.  </td>
+<td>6</td></tr>
 
-@param op object 
-        separator string   : line separator. default: '\n'
-        trim      boolean  : if true, not add a line separator to the end of line. default true.
-        pause     boolean  : if true, not emitting lines unless resume() is called.
-        fieldSep  string   : field separator. default null (no separating).
-        fieldNum  number   : required minimum number of the fields. default null
-        filter    function : line filter, return true to pass the filter.
-        comment   string   : comment mark. if there's a comment mark in the first chars, filter it. default null.
-        empty     boolean  : allow empty line. default true.
+<tr><th>empty</th>
+<td>boolean</td>
+<td>If true, empty lines (after trimmed) are filtered.
+</td>
+<td>true</td></tr>
 
-        other options are passed to fs.createReadStream()
+</table>
 
-Four events are available.
+Other options are passed to **fs.createReadStream(filename, options)** if the first argument is a string.
 
-1. Event: 'data'
-   function (data, isEnd) {}
-   Emitted when the stream has received a line
-   isEnd: boolean. if it is the end of the data or not.
+See [fs.createReadStream()](http://nodejs.org/docs/latest/api/fs.html#fs.createReadStream)
 
-2. Event: 'end'
-   function () {}
-   Emitted when the upper stream has emitted an 'end' event 
-   No lines remain after this event happens.
+### on "data" ###
 
-3. Event: 'error'
-   function (e) {}
-   Emitted if there was an error receiving data.
+Data event of LineStream. Two arguments are passed.
 
-4. Event: 'fd'
-   function (fd) {}
-    Emitted if source stream emits fd event
+- **line**  (string)  each line
+- **isEnd** (boolean) whether the line is final or not.
+
+example
+
+    stream.on("data", function(line, isEnd) {
+      console.log([line, isEnd].join('\t'));
+    });
+
+
+### LineStream.tsv(source, [options], fn) ###
+
+Creates an instance of LineStream, with field separated by "\t".
+
+**source** and **options** are the same as **LineStream.create(source, options)**.
+
+**fn** is called on "data" event. Three arguments are passed.
+
+- **data** (Array)
+- **line** (string)
+- **isEnd** (boolean)
+
+data is equivalent to line.split("\t")
+
+Other arguments are the same as original "data" event.
+
+Returns an instance of LineStream.
+
+
+### stream.after(rstream1, rstream2, ...) ###
+Pauses the stream until all passed readable streams come to an end.
+
+    var ids = {};
+    var comingLines = LineStream.tsv('-', function(data, line, isEnd) { // reads from process.stdin
+      var id = data[0];
+      ids[id] = true;
+    });
+
+    LineStream.tsv('file1', function(data, line, isEnd) { // reads from "file1"
+      var id = data[0];
+      if (ids[id]) console.log(line);
+    })
+    .after(comingLines); // resumes after comingLines finished,

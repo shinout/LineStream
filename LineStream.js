@@ -3,9 +3,9 @@ var Stream = require('stream').Stream;
 var fs = require('fs');
 
 function LineStream(arg, op) {
-  op = op || {};
+  op = op || {trim: true};
   this.separator = op.separator || '\n';
-  this.lineend = (op.trim === false) ? this.separator : '';
+  this.lineend = (op.trim) ? '' : this.separator;
   this.remnant = '';
   this.readable = true; // implementing ReadableStream
   this.paused   = !!op.pause;
@@ -21,7 +21,7 @@ function LineStream(arg, op) {
 
   if (typeof op.comment == "string") {
     this.filters.push(function(line) {
-      return line.indexOf(op.comment) < 0;
+      return line.indexOf(op.comment) != 0;
     });
   }
 
@@ -41,6 +41,14 @@ function LineStream(arg, op) {
 
 
   this.emitted = [];
+
+  delete op.trim;
+  delete op.separator;
+  delete op.empty;
+  delete op.fieldNum;
+  delete op.fieldSep;
+  delete op.filter;
+  delete op.comment;
 
   if (typeof arg == 'string') {
     this.stream = fs.createReadStream(arg, op);
@@ -108,6 +116,10 @@ function LineStream(arg, op) {
 }
 
 LineStream.create = function(arg, op) {
+  if (arg == '-') {
+    arg = process.stdin;
+    process.stdin.resume();
+  }
   return new LineStream(arg, op);
 };
 
@@ -189,12 +201,7 @@ LineStream.tsv = function() {
   var arg = args.shift();
   var fn  = args.pop();
 
-  if (arg == '-') {
-    arg = process.stdin;
-    process.stdin.resume();
-  }
-
-  var lines = new LineStream(arg, args.length? args[0]: null);
+  var lines = LineStream.create(arg, args.length? args[0]: null);
 
   lines.on("data", function(line, isEnd) {
     if (!line.trim()) return;
