@@ -19,7 +19,7 @@ LineStream.js
     stream.on('data', function(line, isEnd) {
       console.log(line); // each line comes here
       console.log(isEnd); // if it is the end of data or not.
-    })
+    });
 
     stream.on('end', function() { // emitted at the end of file
       console.log('end');
